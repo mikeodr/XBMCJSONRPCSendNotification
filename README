@@ -1,1 +1,2 @@
-Quick script that can be called from asterisk's extensions_custom.conf with ${CALLERID(name)} and ${CALLERID(number)} as arguments #1 and #2
+Quick script that can be called from asterisk's extensions_custom.conf to put caller ID on XBMC 12 (Frodo)
+Called with ${CALLERID(name)} and ${CALLERID(number)} as arguments #1 and #2
