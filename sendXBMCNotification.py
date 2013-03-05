@@ -24,22 +24,33 @@ import json
 import urllib
 import urllib2
 
-if( len(sys.argv) < 3 ):
-	sys.exit(1)
+USAGE = """Usage: sendNotification.py TITLE MESSAGE
+Send a notification to XBMC with a title of TITLE and 
+a message containing MESSAGE.
+"""
 
 #Replace your XBMC URL HERE
 XBMCurl = "http://user:pass@ip:port"
-jsonRPCUrl = XBMCurl + '/jsonrpc'
 
+jsonRPCUrl = XBMCurl + '/jsonrpc'
 #Specify the content type as JSON otherwise XBMC will ignore.
 headers = {}
 headers['Content-Type'] = 'application/json'
-#Generate the python dict representing the request
-jsonDict = {'jsonrpc':"2.0", 'method':"GUI.ShowNotification",'params':{'title':"Incomming Call",'message':sys.argv[1] + " " + sys.argv[2]}, 'id':1}
-json = json.dumps(jsonDict)
-post_data = json.encode('utf-8')
 
-#Generate the request with headers and send it
-req = urllib2.Request(jsonRPCUrl, post_data, headers)
-urllib2.urlopen(req)
 
+def SendNotification(titleStr, messageStr):
+    #Generate the python dict representing the request
+    jsonDict = {'jsonrpc':"2.0", 'method':"GUI.ShowNotification",'params':{'title':titleStr,'message':messageStr}, 'id':1}
+    jsonData = json.dumps(jsonDict)
+    post_data = jsonData.encode('utf-8')
+
+    #Generate the request with headers and send it
+    req = urllib2.Request(jsonRPCUrl, post_data, headers)
+    urllib2.urlopen(req)
+
+if __name__ == "__main__":
+    if( len(sys.argv) != 3 ):
+        print USAGE
+        sys.exit(1)
+    else:
+        SendNotification(sys.argv[1], sys.argv[2])
