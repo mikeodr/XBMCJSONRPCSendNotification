@@ -1,2 +1,1 @@
-Quick script that can be called from asterisk's extensions_custom.conf to put caller ID on XBMC 12 (Frodo)
-Called with ${CALLERID(name)} and ${CALLERID(number)} as arguments #1 and #2
+Python script that sends a JSONRCP message to display an on screen notification in XBMC 12 (Frodo)
