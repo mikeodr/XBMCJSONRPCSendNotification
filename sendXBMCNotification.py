@@ -42,16 +42,14 @@ a message containing MESSAGE.
 HOST is an expected URL format of http://user:pass@ip:port
 """
 
-# Get the HOST from command line arg
-XBMCurl = sys.argv[1]
 
-jsonRPCUrl = XBMCurl + '/jsonrpc'
-#Specify the content type as JSON otherwise XBMC will ignore.
-headers = {}
-headers['Content-Type'] = 'application/json'
-
-
-def SendNotification(titleStr, messageStr):
+def SendNotification(hostStr, titleStr, messageStr):
+    # Prepare the URL
+    jsonRPCUrl = hostStr + '/jsonrpc'
+    #Specify the content type as JSON otherwise XBMC will ignore.
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+    
     #Generate the python dict representing the request
     jsonDict = {'jsonrpc':"2.0", 'method':"GUI.ShowNotification",'params':{'title':titleStr,'message':messageStr}, 'id':1}
     jsonData = json.dumps(jsonDict)
@@ -66,4 +64,4 @@ if __name__ == "__main__":
         print USAGE
         sys.exit(1)
     else:
-        SendNotification(sys.argv[2], sys.argv[3])
+        SendNotification(sys.argv[1], sys.argv[2], sys.argv[3])
