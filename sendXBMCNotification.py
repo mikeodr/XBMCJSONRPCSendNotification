@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # Copyright (C) 2013 Mike O'Driscoll <mike@mikeodriscoll.ca>
+# Contributions by Greg Jacobs <http://github.com/gregwjacobs>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,25 +21,35 @@ that asterisk calls to send a caller ID notification
 """
 
 import sys
-import json
+
+# Support for older Python systems (< 2.6) which install simplejson as a workaround
+# http://pypi.python.org/pypi/simplejson
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        print "ERROR: You must install json or simplejson module!"
+        sys.exit(1)
 import urllib
 import urllib2
 
-USAGE = """Usage: sendNotification.py TITLE MESSAGE
+USAGE = """Usage: sendNotification.py HOST TITLE MESSAGE
 Send a notification to XBMC with a title of TITLE and 
 a message containing MESSAGE.
+
+HOST is an expected URL format of http://user:pass@ip:port
 """
 
-#Replace your XBMC URL HERE
-XBMCurl = "http://user:pass@ip:port"
 
-jsonRPCUrl = XBMCurl + '/jsonrpc'
-#Specify the content type as JSON otherwise XBMC will ignore.
-headers = {}
-headers['Content-Type'] = 'application/json'
-
-
-def SendNotification(titleStr, messageStr):
+def SendNotification(hostStr, titleStr, messageStr):
+    # Prepare the URL
+    jsonRPCUrl = hostStr + '/jsonrpc'
+    #Specify the content type as JSON otherwise XBMC will ignore.
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+    
     #Generate the python dict representing the request
     jsonDict = {'jsonrpc':"2.0", 'method':"GUI.ShowNotification",'params':{'title':titleStr,'message':messageStr}, 'id':1}
     jsonData = json.dumps(jsonDict)
@@ -49,8 +60,8 @@ def SendNotification(titleStr, messageStr):
     urllib2.urlopen(req)
 
 if __name__ == "__main__":
-    if( len(sys.argv) != 3 ):
+    if( len(sys.argv) != 4 ):
         print USAGE
         sys.exit(1)
     else:
-        SendNotification(sys.argv[1], sys.argv[2])
+        SendNotification(sys.argv[1], sys.argv[2], sys.argv[3])
