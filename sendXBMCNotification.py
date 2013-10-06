@@ -20,7 +20,17 @@ that asterisk calls to send a caller ID notification
 """
 
 import sys
-import json
+
+# Support for older Python systems (< 2.6) which install simplejson as a workaround
+# http://pypi.python.org/pypi/simplejson
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        print "ERROR: You must install json or simplejson module!"
+        sys.exit(1)
 import urllib
 import urllib2
 
